@@ -5,7 +5,7 @@ require("dotenv").config();
 // Strategy: Just send the TX - public RPC can't read proxy contracts but TXs work fine
 
 const USDC = "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913";
-const AAVE_POOL = "0x13a74610ad9263d02d39e2a5003e2778c7a3a7aa";
+const AAVE_POOL = "0xA238Dd80C259a72e81d7e4664a9801593F98d1c5";
 const AAVE_POOL_ABI = [
   "function supply(address asset, uint256 amount, address onBehalfOf, uint16 referralCode) external",
 ];

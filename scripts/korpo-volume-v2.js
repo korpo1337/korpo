@@ -42,7 +42,7 @@ async function main() {
         const tx = await router.exactInputSingle({
           tokenIn: WETH, tokenOut: KORPO, fee: 10000,
           recipient: wallet.address, deadline,
-          amountIn: amt, amountOutMinimum: 0n, sqrtPriceLimitX96: 0n
+          amountIn: amt, amountOutMinimum: amt / 50n, sqrtPriceLimitX96: 0n  // 2% slippage
         }, { gasLimit: 300000n });
         await tx.wait();
         console.log("✅", tx.hash.slice(0,10) + "...");
@@ -61,7 +61,7 @@ async function main() {
           const tx = await router.exactInputSingle({
             tokenIn: KORPO, tokenOut: WETH, fee: 10000,
             recipient: wallet.address, deadline,
-            amountIn: amt, amountOutMinimum: 0n, sqrtPriceLimitX96: 0n
+            amountIn: amt, amountOutMinimum: amt / 50n, sqrtPriceLimitX96: 0n  // 2% slippage
           }, { gasLimit: 300000n });
           await tx.wait();
           console.log("✅", tx.hash.slice(0,10) + "...");
