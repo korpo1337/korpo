@@ -1,0 +1,18 @@
+{
+  "name": "KORPO Token List",
+  "version": { "major": 1, "minor": 0, "patch": 0 },
+  "logoURI": "https://korpo.pro/assets/logo.svg",
+  "keywords": ["base", "ubi", "korporpo"],
+  "timestamp": "2026-05-11T00:00:00+00:00",
+  "tokens": [
+    {
+      "chainId": 8453,
+      "address": "0xF970c93D00De94786F6fdABBc63180da1D981bc7",
+      "name": "KORPO",
+      "symbol": "KORPO",
+      "decimals": 18,
+      "logoURI": "https://korpo.pro/assets/logo.svg",
+      "tags": ["ubi"]
+    }
+  ]
+}
