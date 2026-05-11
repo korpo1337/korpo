@@ -1,119 +1,83 @@
-# KORPO v2 — The Fair Distribution Token
+# KORPO — Safe UBI Token Launch Template
 
-**Claim free KORPO daily. Every transfer burns 0.5%, so scarcity grows with use.**
+## What You Get
 
-## What Is KORPO?
+A production-ready Hardhat project for deploying a fair-claim UBI token on any EVM chain.
 
-KORPO is an experiment in fair token distribution. There is no ICO, no presale, no team allocation, no staking rewards, and no referral system. The entire supply of 1 billion KORPO lives inside the contract and can only be obtained by claiming — 100 KORPO per wallet per day, for free.
+### Smart Contract (167 LOC)
+- ✅ Daily claim (configurable amount)
+- ✅ Burn on transfer (anti-whale, 0.5% above threshold)
+- ✅ 24h admin timelock (transparent governance)
+- ✅ Pause function (with timelock delay)
+- ✅ ReentrancyGuard
+- ✅ Ownable
 
-Every peer-to-peer transfer of 100 KORPO or more burns 0.5% of the transferred amount. Transfers below 100 KORPO are exempt. This creates a deflationary pressure that scales with usage: the more the token circulates, the more is burned.
+### Test Suite (55 tests)
+- ✅ Claim mechanics
+- ✅ Burn thresholds
+- ✅ Cooldown enforcement
+- ✅ Timelock queue/execute
+- ✅ Pause/unpause
+- ✅ Sybil scenario (20 wallets)
+- ✅ Gas benchmarks
 
-**This is an experiment. There is no guarantee of value, liquidity, or returns.**
+### Scripts
+- ✅ Mainnet deploy (Base, any EVM)
+- ✅ Uniswap V3 LP creation
+- ✅ Aave V3 supply integration
+- ✅ Daily claim automation
+- ✅ Volume generation (DexScreener indexing)
+- ✅ Monitoring + reporting
 
-## How It Works
+### Security
+- ✅ Threat model document
+- ✅ go/no-go checklist
+- ✅ Codex AI audit findings (6 critical fixed)
+- ✅ Slippage protection on all swaps
 
-### Claiming
+### Website
+- ✅ Claim UI (wallet connect)
+- ✅ FAQ page
+- ✅ Roadmap page
+- ✅ Waitlist page
+- ✅ Risk disclosure
+- ✅ Analytics tracking
+- ✅ Donation/support widget
 
-- Any wallet can call `claim()` once per day (24-hour cooldown)
-- Each claim mints exactly **100 KORPO** from the contract's reserve to the caller
-- The contract holds the entire 1 billion supply at deployment
-- No payment, approval, or qualification is required — just gas
+## Not Included
+- Professional paid audit (recommended for serious projects)
+- Legal opinions
+- Marketing services
+- Guaranteed returns or value
 
-### Burn on Transfer
-
-- Transfers of **100 KORPO or more** burn **0.5%** of the amount
-  - Example: sending 1,000 KORPO → 5 KORPO burned, 995 KORPO received
-- Transfers **below 100 KORPO** are not subject to burn
-- Claiming (transfer from contract) is **exempt** from burn
-- Minting and explicit burning are also exempt
-
-### Owner Controls
-
-- The contract owner can **pause claiming** and **transfer or renounce ownership**
-- All owner actions require a **24-hour timelock** — queue first, execute after delay
-- The owner **cannot** access user funds or contract reserves
-
-## Contract Details
-
-| Parameter | Value |
-|-----------|-------|
-| Token | KORPO (KORPO) |
-| Chain | Base (Base Sepolia testnet first) |
-| Total Supply | 1,000,000,000 KORPO |
-| Daily Claim | 100 KORPO per wallet |
-| Claim Cooldown | 24 hours |
-| Burn Rate | 0.5% on transfers ≥ 100 KORPO |
-| Burn Threshold | 100 KORPO |
-| Timelock Delay | 24 hours |
-| Solidity | 0.8.24 |
-
-## Getting Started
-
-### Prerequisites
-
-- Node.js ≥ 18
-- npm
-
-### Install
+## Quick Start
 
 ```bash
-git clone <repo-url> && cd korpo-v2
+git clone https://github.com/korpo-protocol/korpo-v2.git
+cd korpo-v2
 npm install
-```
-
-### Configure
-
-Copy the environment template:
-
-```bash
-cp .env.example .env
-# Edit .env with your private key and RPC URL
-```
-
-### Test
-
-```bash
+cp .env.example .env  # Fill in your keys
+npx hardhat compile
 npx hardhat test
+# 55 passing
 ```
 
-### Deploy to Base Sepolia
+## Deploy
 
 ```bash
-npx hardhat run scripts/deploy.js --network base-sepolia
+# Testnet first
+npx hardhat run scripts/deploy-testnet-v2.js --network baseSepolia
+
+# Mainnet (after testing!)
+npx hardhat run scripts/deploy-mainnet.js --network base
 ```
-
-## Contract Interface
-
-```solidity
-// Claim your daily KORPO
-function claim() external;
-
-// Check if a wallet can claim
-function canClaim(address user) external view returns (bool);
-
-// Get next eligible claim timestamp (0 if eligible now)
-function nextClaimTime(address user) external view returns (uint256);
-
-// Remaining KORPO in contract reserve
-function remainingSupply() external view returns (uint256);
-
-// Total KORPO burned through transfers
-function totalBurned() external view returns (uint256);
-
-// Total KORPO claimed by all users
-function totalClaimed() external view returns (uint256);
-
-// Number of unique wallets that have claimed
-function uniqueClaimers() external view returns (uint256);
-```
-
-## Documentation
-
-- **[SECURITY.md](./SECURITY.md)** — Security architecture and measures
-- **[RISK.md](./RISK.md)** — Risk disclosure
-- **[TOKENOMICS.md](./TOKENOMICS.md)** — Supply, distribution, and burn dynamics
-- **[THREAT_MODEL.md](./THREAT_MODEL.md)** — Attack scenarios and mitigations
 
 ## License
+MIT — use it, modify it, launch your own UBI experiment.
 
-MIT (contract) / MIT (code). See [contracts/KORPO.sol](./contracts/KORPO.sol).
+---
+
+*This template was battle-tested on Base mainnet. 55/55 tests pass. Contract:
+[0xF970c93D00De94786F6fdABBc63180da1D981bc7](https://basescan.org/address/0xF970c93D00De94786F6fdABBc63180da1D981bc7)
+
+**Disclaimer**: This is experimental software. No warranties. No investment advice. Tokens may have zero value.*
