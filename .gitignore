@@ -1,0 +1,13 @@
+node_modules/
+.env
+.env.local
+coverage/
+cache/
+artifacts/
+typechain-types/
+deployment.json
+
+# Never commit private keys
+*.key
+*.pem
+secrets/
