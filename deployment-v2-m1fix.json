@@ -1,0 +1,17 @@
+{
+  "network": "base-sepolia",
+  "chainId": 84532,
+  "address": "0x82C11851b12C9264a7AE411b2C15bb4F24f3Fe68",
+  "deployer": "0xAFe3A600e81ecfB0714e28Bff82c9944C4B7666d",
+  "deployedAt": "2026-05-11T07:24:55.806Z",
+  "m1_fix": true,
+  "contract": {
+    "name": "KORPO",
+    "symbol": "KORPO",
+    "totalSupply": "1000000000.0",
+    "dailyClaim": "100.0",
+    "burnRate": "0.5%",
+    "paused": false,
+    "owner": "0xAFe3A600e81ecfB0714e28Bff82c9944C4B7666d"
+  }
+}

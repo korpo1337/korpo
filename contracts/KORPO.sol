@@ -98,6 +98,7 @@ contract KORPO is ERC20, Ownable, ReentrancyGuard {
         bool shouldBurn = from != address(0) 
                        && to != address(0) 
                        && from != address(this)
+                       && from != to           // No burn on self-transfer (M-1 fix)
                        && value >= MIN_BURN_THRESHOLD;
 
         if (shouldBurn) {

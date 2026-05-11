@@ -380,6 +380,36 @@ describe("KORPO", function () {
     });
   });
 
+  // ───── Self-Transfer (M-1 Fix) ────────────────────────────
+  describe("Self-Transfer (M-1 Fix)", function () {
+    it("should NOT burn on self-transfer above threshold", async function () {
+      await korpo.connect(alice).claim();
+      // Alice has 100 KORPO, sends to herself
+      const balBefore = await korpo.balanceOf(alice.address);
+      await korpo.connect(alice).transfer(alice.address, DAILY_CLAIM);
+      const balAfter = await korpo.balanceOf(alice.address);
+      expect(balAfter).to.equal(balBefore);
+    });
+
+    it("should NOT burn on self-transfer below threshold", async function () {
+      await korpo.connect(alice).claim();
+      // Transfer 50 KORPO to self (below 100 threshold)
+      await korpo.connect(alice).transfer(alice.address, ethers.parseEther("50"));
+      const bal = await korpo.balanceOf(alice.address);
+      expect(bal).to.equal(DAILY_CLAIM); // No burn, full balance preserved
+    });
+
+    it("should still burn on normal transfer after self-transfer", async function () {
+      await korpo.connect(alice).claim();
+      // Self-transfer (no burn)
+      await korpo.connect(alice).transfer(alice.address, DAILY_CLAIM);
+      // Normal transfer to Bob (should burn)
+      await korpo.connect(alice).transfer(bob.address, DAILY_CLAIM);
+      const bobBal = await korpo.balanceOf(bob.address);
+      expect(bobBal).to.equal(ethers.parseEther("99.5")); // 0.5% burned
+    });
+  });
+
   // ───── Reentrancy Protection ─────────────────────────────
   describe("Reentrancy Protection", function () {
     it("should have nonReentrant on claim", async function () {
