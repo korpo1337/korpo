@@ -10,7 +10,7 @@ async function main() {
   const provider = new ethers.JsonRpcProvider("https://mainnet.base.org", undefined, { staticNetwork: true });
   const wallet = new ethers.Wallet(process.env.PRIVATE_KEY, provider);
   
-  const artifact = require("./artifacts/contracts/KORPO.sol/KORPO.json");
+  const artifact = require("/home/ubuntu/korpo-v2/artifacts/contracts/KORPO.sol/KORPO.json");
   const korpo = new ethers.Contract(KORPO_ADDR, artifact.abi, wallet);
   
   console.log("=== KORPO Daily Claim ===");
@@ -30,7 +30,7 @@ async function main() {
   
   // Claim
   console.log("Claiming 100 KORPO...");
-  const tx = await korpo.claim({ gasLimit: 200000n });
+  const tx = await korpo.claim({ gasLimit: 200000 });
   console.log("Tx:", tx.hash);
   const receipt = await tx.wait();
   console.log("Status:", receipt.status === 1 ? "✅ SUCCESS" : "❌ FAILED");

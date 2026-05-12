@@ -17,5 +17,9 @@
   },
   "directories": {
     "test": "test"
+  },
+  "dependencies": {
+    "cloakbrowser": "^0.3.28",
+    "playwright-core": "^1.60.0"
   }
 }

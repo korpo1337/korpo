@@ -1,131 +1,89 @@
-const { ethers } = require("ethers");
-const fs = require("fs");
-require("dotenv").config();
+const { ethers } = require("hardhat");
 
 async function main() {
-  const RPC_URL = process.env.RPC_URL || "https://base-sepolia-rpc.publicnode.com";
-  const PRIVATE_KEY = process.env.PRIVATE_KEY;
-  
-  if (!PRIVATE_KEY) {
-    console.error("❌ PRIVATE_KEY not set in .env");
-    process.exit(1);
-  }
-  
-  const provider = new ethers.JsonRpcProvider(RPC_URL);
-  const wallet = new ethers.Wallet(PRIVATE_KEY, provider);
-  
-  console.log("📡 RPC:", RPC_URL);
-  console.log("👛 Wallet:", wallet.address);
-  const balance = await provider.getBalance(wallet.address);
-  console.log("💰 Balance:", ethers.formatEther(balance), "ETH");
-  
-  if (balance === 0n) {
-    console.error("❌ No ETH for gas! Get testnet ETH from a faucet.");
-    process.exit(1);
-  }
+  const [deployer] = await ethers.getSigners();
+  console.log("Deploying with:", deployer.address);
 
-  // Load compiled contract
-  const artifact = JSON.parse(
-    fs.readFileSync("./artifacts/contracts/KORPO.sol/KORPO.json", "utf8")
-  );
-  
-  console.log("\n📦 Deploying KORPO...");
-  const factory = new ethers.ContractFactory(artifact.abi, artifact.bytecode, wallet);
-  
-  // Estimate gas
-  const deployTx = await factory.getDeployTransaction();
-  const gasEstimate = await provider.estimateGas(deployTx);
-  const feeData = await provider.getFeeData();
-  const totalCost = gasEstimate * (feeData.gasPrice || 0n);
-  console.log("⛽ Estimated gas:", gasEstimate.toString());
-  console.log("💰 Estimated cost:", ethers.formatEther(totalCost), "ETH");
-  
-  // Deploy
-  const korpo = await factory.deploy();
+  const balance = await ethers.provider.getBalance(deployer.address);
+  console.log("Balance:", ethers.formatEther(balance), "ETH");
+
+  // 1. Deploy Mock KORPO Token
+  console.log("\n--- Deploying MockKORPO ---");
+  const MockERC20 = await ethers.getContractFactory("MockERC20");
+  const korpo = await MockERC20.deploy("KORPO", "KORPO", ethers.parseEther("1000000000"));
   await korpo.waitForDeployment();
-  const address = await korpo.getAddress();
-  
-  console.log("\n✅ KORPO deployed to:", address);
-  console.log("🔗 Explorer:", `https://sepolia.basescan.org/address/${address}`);
-  
-  // Wait for confirmations before verification
-  console.log("\n⏳ Waiting for 5 confirmations...");
-  const deployTxReceipt = await provider.getTransactionReceipt(korpo.deploymentTransaction().hash);
-  let confs = await provider.getTransactionReceipt(korpo.deploymentTransaction().hash);
-  // Just wait a bit for block explorer to index
-  await new Promise(resolve => setTimeout(resolve, 15000));
-  
-  // Verify on-chain state
-  console.log("\n🔍 Verifying on-chain state...");
-  const name = await korpo.name();
-  const symbol = await korpo.symbol();
-  const totalSupply = await korpo.totalSupply();
-  const owner = await korpo.owner();
-  const paused = await korpo.paused();
-  const dailyClaim = await korpo.DAILY_CLAIM();
-  const burnRate = await korpo.BURN_RATE();
-  const remainingSupply = await korpo.remainingSupply();
-  
-  console.log("  Name:", name);
-  console.log("  Symbol:", symbol);
-  console.log("  Total Supply:", ethers.formatEther(totalSupply));
-  console.log("  Remaining Supply:", ethers.formatEther(remainingSupply));
-  console.log("  Owner:", owner);
-  console.log("  Paused:", paused);
-  console.log("  Daily Claim:", ethers.formatEther(dailyClaim));
-  console.log("  Burn Rate:", Number(burnRate) / 100 + "%");
-  
-  // Test claim
-  console.log("\n🧪 Testing live claim...");
-  const canClaim = await korpo.canClaim(wallet.address);
-  console.log("  Can claim:", canClaim);
-  
-  if (canClaim) {
-    const claimTx = await korpo.claim();
-    console.log("  Claim tx:", claimTx.hash);
-    await claimTx.wait();
-    const bal = await korpo.balanceOf(wallet.address);
-    console.log("  Balance after claim:", ethers.formatEther(bal), "KORPO");
-  }
-  
-  // Test transfer with burn
-  console.log("\n🧪 Testing live transfer with burn...");
-  const randomAddr = ethers.Wallet.createRandom().address;
-  const transferAmount = ethers.parseEther("50"); // Below burn threshold
-  const transferTx = await korpo.transfer(randomAddr, transferAmount);
-  console.log("  Transfer tx:", transferTx.hash);
-  await transferTx.wait();
-  console.log("  Recipient balance:", ethers.formatEther(await korpo.balanceOf(randomAddr)), "KORPO (no burn - below threshold)");
-  
-  // Save deployment info
-  const deployInfo = {
-    network: "base-sepolia",
-    chainId: 84532,
-    address: address,
-    deployer: wallet.address,
-    deployedAt: new Date().toISOString(),
-    txHash: korpo.deploymentTransaction().hash,
-    gasUsed: deployTxReceipt?.gasUsed?.toString() || "unknown",
-    contract: {
-      name: name,
-      symbol: symbol,
-      totalSupply: ethers.formatEther(totalSupply),
-      dailyClaim: ethers.formatEther(dailyClaim),
-      burnRate: Number(burnRate) / 10000 * 100 + "%",
-      paused: paused,
-      owner: owner,
-    },
-  };
-  
-  fs.writeFileSync("./deployment.json", JSON.stringify(deployInfo, null, 2));
-  console.log("\n📄 Deployment info saved to deployment.json");
-  
-  console.log("\n🎯 NEXT STEPS:");
-  console.log("  1. Verify contract on Basescan");
-  console.log("  2. Run full on-chain test suite");
-  console.log("  3. Test timelock pause/unpause");
-  console.log("  4. Test with multiple wallets");
-  console.log("  5. Document all results");
+  console.log("KORPO:", await korpo.getAddress());
+
+  // 2. Deploy Mock WETH
+  console.log("\n--- Deploying MockWETH ---");
+  const weth = await MockERC20.deploy("Wrapped Ether", "WETH", ethers.parseEther("1000000"));
+  await weth.waitForDeployment();
+  console.log("WETH:", await weth.getAddress());
+
+  // 3. Deploy Mock Position Manager
+  console.log("\n--- Deploying MockPositionManager ---");
+  const MockPM = await ethers.getContractFactory("MockPositionManager");
+  const pm = await MockPM.deploy();
+  await pm.waitForDeployment();
+  console.log("PositionManager:", await pm.getAddress());
+
+  // 4. Deploy KORPOLiquidityReward
+  console.log("\n--- Deploying KORPOLiquidityReward ---");
+  const KLR = await ethers.getContractFactory("KORPOLiquidityReward");
+  const reward = await KLR.deploy(
+    await korpo.getAddress(),
+    await pm.getAddress(),
+    await weth.getAddress(),  // WETH address (mock for testnet)
+    ethers.ZeroAddress       // Merkl distributor (not deployed yet)
+  );
+  await reward.waitForDeployment();
+  console.log("KORPOLiquidityReward:", await reward.getAddress());
+
+  // 5. Fund reward pool
+  console.log("\n--- Funding Reward Pool ---");
+  const fundAmount = ethers.parseEther("500000"); // 500K KORPO for rewards
+  await korpo.approve(await reward.getAddress(), fundAmount);
+  await reward.fundRewardPool(fundAmount);
+  console.log("Funded with:", ethers.formatEther(fundAmount), "KORPO");
+
+  // 6. Queue and set reward rate (need to timelock)
+  // For testnet we'll set it immediately by manipulating timestamp if possible
+  // Or just queue it for now
+  console.log("\n--- Queuing Reward Rate ---");
+  const rewardPerSecond = ethers.parseEther("0.5"); // 0.5 KORPO/second ≈ 15.7M KORPO/year
+  await reward.queueSetRewardRate(rewardPerSecond, 0);
+  console.log("Reward rate queued - needs 24h timelock to activate");
+
+  // 7. Mint test LP positions for alice and bob
+  console.log("\n--- Creating Test LP Positions ---");
+  const signers = await ethers.getSigners();
+  const alice = signers[1] || signers[0];
+  const bob = signers[2] || signers[0];
+
+  // Mint NFT #1: alice, KORPO/WETH, 1% fee, 1 ETH liquidity
+  await pm.mint(alice.address, await korpo.getAddress(), await weth.getAddress(), 10000, -887220, 887220, ethers.parseEther("1"));
+  console.log("Minted LP NFT #1 for alice");
+
+  // Mint NFT #2: bob, KORPO/WETH, 1% fee, 0.5 ETH liquidity
+  await pm.mint(bob.address, await korpo.getAddress(), await weth.getAddress(), 10000, -887220, 887220, ethers.parseEther("0.5"));
+  console.log("Minted LP NFT #2 for bob");
+
+  // 8. Summary
+  console.log("\n========== DEPLOYMENT SUMMARY ==========");
+  console.log("Network:", (await ethers.provider.getNetwork()).name);
+  console.log("Chain ID:", (await ethers.provider.getNetwork()).chainId);
+  console.log("KORPO Token:", await korpo.getAddress());
+  console.log("MockWETH:", await weth.getAddress());
+  console.log("PositionManager:", await pm.getAddress());
+  console.log("KORPOLiquidityReward:", await reward.getAddress());
+  console.log("Owner:", deployer.address);
+  console.log("Reward Rate Queued:", ethers.formatEther(rewardPerSecond), "KORPO/sec");
+  console.log("=========================================");
 }
 
-main().catch(console.error);
+main()
+  .then(() => process.exit(0))
+  .catch((error) => {
+    console.error(error);
+    process.exit(1);
+  });
