@@ -1,14 +1,35 @@
 {
-  "name": "korpo-v2",
+  "name": "korpo",
   "version": "1.0.0",
-  "description": "",
+  "description": "KORPO — Fair Distribution Token on Base. A free-claim, burn-on-transfer ERC-20 experiment.",
   "main": "index.js",
   "scripts": {
     "test": "npx hardhat test"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "keywords": [
+    "KORPO",
+    "KORPO token Base",
+    "Base token",
+    "ERC20",
+    "fair launch",
+    "UBI token",
+    "burn on transfer",
+    "free claim token",
+    "open source token",
+    "Solidity",
+    "Hardhat",
+    "OpenZeppelin"
+  ],
+  "author": "korpo1337",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/korpo1337/korpo.git"
+  },
+  "bugs": {
+    "url": "https://github.com/korpo1337/korpo/issues"
+  },
+  "homepage": "https://github.com/korpo1337/korpo#readme",
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox": "^5.0.0",
     "@openzeppelin/contracts": "^5.6.1",
@@ -20,6 +41,7 @@
   },
   "dependencies": {
     "cloakbrowser": "^0.3.28",
+    "ethers": "^6.16.0",
     "playwright-core": "^1.60.0"
   }
 }
