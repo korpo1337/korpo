@@ -1,0 +1,1053 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KORPO — The Fair Distribution Token</title>
+  <meta name="description" content="KORPO is a fair-launch token on Base. Claim 100 KORPO/day for free. 0.5% burn per transfer. 1B supply. No ICO, no insiders.">
+  <meta property="og:title" content="KORPO — The Fair Distribution Token">
+  <meta property="og:description" content="Fair launch. Free claims. Burn mechanism. On Base.">
+  <meta property="og:image" content="https://korpo.pro/assets/korpo-logo-256.png">
+  <meta property="og:image:width" content="256">
+  <meta property="og:image:height" content="256">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="KORPO — The Fair Distribution Token">
+  <meta name="twitter:description" content="Fair launch. Free claims. Built-in burn. Zero insiders.">
+  <meta name="twitter:image" content="https://korpo.pro/assets/korpo-logo-256.png">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://korpo.pro">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔮</text></svg>">
+  <style>
+    /* ─── Reset & Base ─── */
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg-primary: #0a0a12;
+      --bg-secondary: #12121f;
+      --bg-card: #161628;
+      --border-card: #2a2a4a;
+      --gradient-1: linear-gradient(135deg, #7c3aed, #3b82f6, #06b6d4);
+      --gradient-2: linear-gradient(135deg, #a855f7, #6366f1);
+      --gradient-3: linear-gradient(135deg, #06b6d4, #3b82f6, #7c3aed);
+      --text-primary: #f0f0ff;
+      --text-secondary: #a0a0c0;
+      --text-muted: #6b6b8a;
+      --accent: #7c3aed;
+      --accent-light: #a78bfa;
+      --base-blue: #0052ff;
+      --glow-purple: rgba(124, 58, 237, 0.35);
+      --glow-blue: rgba(59, 130, 246, 0.25);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Inter', sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ─── Animated Background ─── */
+    .bg-orbs {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+    .bg-orbs .orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(120px);
+      opacity: 0.4;
+      animation: orbFloat 20s ease-in-out infinite;
+    }
+    .bg-orbs .orb:nth-child(1) {
+      width: 600px; height: 600px;
+      background: var(--accent);
+      top: -200px; left: -100px;
+      animation-delay: 0s;
+    }
+    .bg-orbs .orb:nth-child(2) {
+      width: 500px; height: 500px;
+      background: #3b82f6;
+      bottom: -150px; right: -100px;
+      animation-delay: -7s;
+    }
+    .bg-orbs .orb:nth-child(3) {
+      width: 400px; height: 400px;
+      background: #06b6d4;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      animation-delay: -14s;
+    }
+    @keyframes orbFloat {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      25% { transform: translate(50px, -30px) scale(1.1); }
+      50% { transform: translate(-30px, 50px) scale(0.9); }
+      75% { transform: translate(30px, 20px) scale(1.05); }
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    /* ─── Nav ─── */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      background: rgba(10, 10, 18, 0.8);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(124, 58, 237, 0.15);
+    }
+    nav .container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+    }
+    .nav-logo {
+      font-size: 1.4rem;
+      font-weight: 800;
+      background: var(--gradient-1);
+      background-size: 200% 200%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: gradientShift 4s ease infinite;
+      text-decoration: none;
+    }
+    .nav-links {
+      display: flex;
+      gap: 24px;
+      align-items: center;
+    }
+    .nav-links a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--accent-light); }
+    .nav-links .btn-nav {
+      background: var(--gradient-2);
+      color: #fff;
+      padding: 8px 20px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.85rem;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .nav-links .btn-nav:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 20px var(--glow-purple);
+      color: #fff;
+    }
+
+    /* ─── Hero ─── */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 100px 20px 60px;
+    }
+    .hero-content { max-width: 800px; }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(124, 58, 237, 0.12);
+      border: 1px solid rgba(124, 58, 237, 0.3);
+      border-radius: 100px;
+      padding: 6px 18px;
+      font-size: 0.85rem;
+      color: var(--accent-light);
+      margin-bottom: 24px;
+    }
+    .hero-badge .base-dot {
+      width: 8px; height: 8px;
+      background: var(--base-blue);
+      border-radius: 50%;
+      display: inline-block;
+      box-shadow: 0 0 6px var(--base-blue);
+    }
+    .hero h1 {
+      font-size: clamp(2.5rem, 6vw, 4.5rem);
+      font-weight: 900;
+      line-height: 1.1;
+      margin-bottom: 8px;
+      background: var(--gradient-1);
+      background-size: 300% 300%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: gradientShift 6s ease infinite;
+    }
+    .hero .subtitle {
+      font-size: clamp(1rem, 2.5vw, 1.4rem);
+      color: var(--text-secondary);
+      margin-bottom: 32px;
+      font-weight: 300;
+    }
+
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* ─── Contract Address ─── */
+    .contract-box {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-radius: 12px;
+      padding: 12px 20px;
+      margin-bottom: 32px;
+      cursor: pointer;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      position: relative;
+    }
+    .contract-box:hover {
+      border-color: var(--accent);
+      box-shadow: 0 0 20px var(--glow-purple);
+    }
+    .contract-box .label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .contract-box .addr {
+      font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+      font-size: 0.82rem;
+      color: var(--accent-light);
+      word-break: break-all;
+    }
+    .contract-box .copy-icon {
+      flex-shrink: 0;
+      color: var(--text-muted);
+      transition: color 0.2s;
+    }
+    .contract-box:hover .copy-icon { color: var(--accent-light); }
+    .copy-toast {
+      position: absolute;
+      top: -36px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--accent);
+      color: #fff;
+      padding: 4px 14px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s, top 0.3s;
+    }
+    .copy-toast.show {
+      opacity: 1;
+      top: -40px;
+    }
+
+    /* ─── Chain Badge ─── */
+    .chain-info {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 24px;
+      margin-bottom: 32px;
+      flex-wrap: wrap;
+    }
+    .chain-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(0, 82, 255, 0.1);
+      border: 1px solid rgba(0, 82, 255, 0.25);
+      border-radius: 8px;
+      padding: 8px 16px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #6090ff;
+    }
+    .pool-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(236, 72, 153, 0.08);
+      border: 1px solid rgba(236, 72, 153, 0.2);
+      border-radius: 8px;
+      padding: 8px 16px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #f472b6;
+    }
+    .base-logo {
+      width: 18px; height: 18px;
+    }
+    .base-logo svg { width: 100%; height: 100%; }
+
+    /* ─── Buttons ─── */
+    .btn-group {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 32px;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: 700;
+      text-decoration: none;
+      transition: transform 0.2s, box-shadow 0.2s;
+      border: none;
+      cursor: pointer;
+    }
+    .btn:hover { transform: translateY(-2px); }
+    .btn-primary {
+      background: var(--gradient-2);
+      color: #fff;
+      box-shadow: 0 4px 25px var(--glow-purple);
+    }
+    .btn-primary:hover { box-shadow: 0 6px 35px var(--glow-purple); }
+    .btn-secondary {
+      background: var(--bg-card);
+      color: var(--text-primary);
+      border: 1px solid var(--border-card);
+    }
+    .btn-secondary:hover {
+      border-color: var(--accent);
+      box-shadow: 0 4px 20px var(--glow-purple);
+    }
+
+    /* ─── Stats ─── */
+    .section { padding: 80px 20px; }
+    .section-title {
+      text-align: center;
+      font-size: clamp(1.8rem, 4vw, 2.5rem);
+      font-weight: 800;
+      margin-bottom: 8px;
+      background: var(--gradient-1);
+      background-size: 200% 200%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: gradientShift 6s ease infinite;
+    }
+    .section-subtitle {
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 1rem;
+      margin-bottom: 48px;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+      margin-bottom: 48px;
+    }
+    .stat-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-radius: 16px;
+      padding: 28px 24px;
+      text-align: center;
+      transition: border-color 0.3s, box-shadow 0.3s, transform 0.3s;
+    }
+    .stat-card:hover {
+      border-color: var(--accent);
+      box-shadow: 0 0 30px var(--glow-purple);
+      transform: translateY(-4px);
+    }
+    .stat-icon { font-size: 2rem; margin-bottom: 12px; }
+    .stat-value {
+      font-size: 2rem;
+      font-weight: 800;
+      background: var(--gradient-3);
+      background-size: 200% 200%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: gradientShift 5s ease infinite;
+    }
+    .stat-value.loading {
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 0.4; }
+      50% { opacity: 1; }
+    }
+    .stat-label {
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-top: 4px;
+    }
+
+    /* ─── Features ─── */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 20px;
+    }
+    .feature-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-radius: 16px;
+      padding: 32px 28px;
+      transition: border-color 0.3s, box-shadow 0.3s, transform 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+    .feature-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--gradient-1);
+      background-size: 200% 200%;
+      animation: gradientShift 4s ease infinite;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .feature-card:hover {
+      border-color: var(--accent);
+      box-shadow: 0 0 30px var(--glow-purple);
+      transform: translateY(-4px);
+    }
+    .feature-card:hover::before { opacity: 1; }
+    .feature-icon {
+      font-size: 2.5rem;
+      margin-bottom: 16px;
+      display: block;
+    }
+    .feature-title {
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: var(--text-primary);
+    }
+    .feature-value {
+      font-size: 1.5rem;
+      font-weight: 800;
+      background: var(--gradient-2);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 8px;
+    }
+    .feature-desc {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+
+    /* ─── How It Works ─── */
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 32px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .step {
+      text-align: center;
+      position: relative;
+    }
+    .step-number {
+      width: 48px; height: 48px;
+      border-radius: 50%;
+      background: var(--gradient-2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 1.2rem;
+      margin: 0 auto 16px;
+      box-shadow: 0 0 20px var(--glow-purple);
+    }
+    .step h3 {
+      font-size: 1.1rem;
+      margin-bottom: 8px;
+      font-weight: 700;
+    }
+    .step p {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+    }
+
+    /* ─── Links Section ─── */
+    .links-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 16px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .link-card {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-radius: 12px;
+      padding: 20px 24px;
+      text-decoration: none;
+      color: var(--text-primary);
+      transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+    }
+    .link-card:hover {
+      border-color: var(--accent);
+      box-shadow: 0 0 20px var(--glow-purple);
+      transform: translateY(-2px);
+    }
+    .link-icon { font-size: 1.8rem; flex-shrink: 0; }
+    .link-text .link-title {
+      font-weight: 700;
+      font-size: 0.95rem;
+    }
+    .link-text .link-desc {
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      margin-top: 2px;
+    }
+    .link-arrow {
+      margin-left: auto;
+      color: var(--text-muted);
+      font-size: 1.2rem;
+      transition: transform 0.2s, color 0.2s;
+    }
+    .link-card:hover .link-arrow {
+      transform: translateX(4px);
+      color: var(--accent-light);
+    }
+
+    /* ─── CTA ─── */
+    .cta-section {
+      text-align: center;
+      padding: 80px 20px;
+    }
+    .cta-section h2 {
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      font-weight: 900;
+      margin-bottom: 16px;
+      background: var(--gradient-1);
+      background-size: 300% 300%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: gradientShift 6s ease infinite;
+    }
+    .cta-section p {
+      color: var(--text-secondary);
+      margin-bottom: 32px;
+      font-size: 1.1rem;
+    }
+
+    /* ─── Footer ─── */
+    footer {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      border-top: 1px solid rgba(124, 58, 237, 0.15);
+    }
+    footer a {
+      color: var(--accent-light);
+      text-decoration: none;
+    }
+
+    /* ─── Scrollbar ─── */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: var(--bg-primary); }
+    ::-webkit-scrollbar-thumb {
+      background: var(--border-card);
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+    /* ─── Responsive ─── */
+    @media (max-width: 768px) {
+      .nav-links a:not(.btn-nav) { display: none; }
+      .hero { padding: 80px 16px 40px; }
+      .contract-box { flex-direction: column; gap: 6px; padding: 12px 16px; }
+      .contract-box .addr { font-size: 0.72rem; }
+      .btn { padding: 12px 24px; font-size: 0.9rem; }
+      .section { padding: 60px 16px; }
+      .feature-card { padding: 24px 20px; }
+      .stat-value { font-size: 1.5rem; }
+    }
+
+    /* ─── Animated entry ─── */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .fade-up.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ─── Particle canvas ─── */
+    #particles {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+    }
+  </style>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FinancialProduct",
+  "name": "KORPO",
+  "description": "KORPO - The Fair Distribution Token on Base. Claim 100 KORPO/day for free. 0.5% burn per transfer. 1B supply. No ICO, no insiders.",
+  "url": "https://korpo.pro",
+  "identifier": "0xf970c93d00de94786f6fdabbc63180da1d981bc7",
+  "platform": "Base",
+  "currency": "KORPO"
+}
+</script>
+</head>
+<body>
+
+  <!-- Background Effects -->
+  <div class="bg-orbs">
+    <div class="orb"></div>
+    <div class="orb"></div>
+    <div class="orb"></div>
+  </div>
+  <canvas id="particles"></canvas>
+
+  <!-- Navigation -->
+  <nav>
+    <div class="container">
+      <a href="#" class="nav-logo">🔮 KORPO</a>
+      <div class="nav-links">
+        <a href="#features">Features</a>
+        <a href="#stats">Stats</a>
+        <a href="#links">Links</a>
+        <a href="https://app.uniswap.org/#/pool/0x588Cc334d86C40fF16b8714f1Ff8bd25993CFa9e" target="_blank" class="btn-nav">Get KORPO</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-content fade-up">
+      <div class="hero-badge">
+        <span class="base-dot"></span>
+        Live on Base
+      </div>
+      <h1>KORPO</h1>
+      <p class="subtitle">The Fair Distribution Token</p>
+
+      <!-- Contract Address -->
+      <div class="contract-box" id="contractBox" onclick="copyContract()" title="Click to copy contract address">
+        <div>
+          <div class="label">Contract Address</div>
+          <div class="addr" id="contractAddr">0xf970c93d00de94786f6fdabbc63180da1d981bc7</div>
+        </div>
+        <span class="copy-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        </span>
+        <div class="copy-toast" id="copyToast">Copied!</div>
+      </div>
+
+      <!-- Chain & Pool Badges -->
+      <div class="chain-info">
+        <div class="chain-badge">
+          <span class="base-logo">
+            <svg viewBox="0 0 111 111" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="55.5" cy="55.5" r="55.5" fill="#0052FF"/>
+              <path d="M55.5 85C72.3457 85 85 72.3782 85 55.5C85 38.6218 72.3457 26 55.5 26C39.2852 26 25.9938 37.7082 25 53.5H44C44.916 48.0385 49.6172 44 55.5 44C62.4036 44 68 49.5964 68 56.5C68 63.4036 62.4036 69 55.5 69C49.6172 69 44.916 64.9615 44 63H25C25.9938 77.2918 39.2852 85 55.5 85Z" fill="white"/>
+            </svg>
+          </span>
+          Base Chain
+        </div>
+        <div class="pool-badge">
+          ⚡ KORPO/WETH 1% — UniV3
+        </div>
+      </div>
+
+      <!-- CTA Buttons -->
+      <div class="btn-group">
+        <a href="/claim.html" class="btn btn-primary">
+          🔮 Claim KORPO
+        </a>
+        <a href="https://app.uniswap.org/explore/tokens/base/0xf970c93d00de94786f6fdabbc63180da1d981bc7" target="_blank" class="btn btn-secondary">
+          🦄 Trade on Uniswap
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="section" id="features">
+    <div class="container">
+      <h2 class="section-title fade-up">Why KORPO?</h2>
+      <p class="section-subtitle fade-up">No insiders. No ICO. Just fair distribution for everyone.</p>
+      <div class="features-grid">
+        <div class="feature-card fade-up">
+          <span class="feature-icon">🤑</span>
+          <div class="feature-value">100 / day</div>
+          <div class="feature-title">Free Claim</div>
+          <div class="feature-desc">Claim 100 KORPO tokens every day — completely free. No gas tricks, no hidden fees. Just connect and claim.</div>
+        </div>
+        <div class="feature-card fade-up">
+          <span class="feature-icon">🔥</span>
+          <div class="feature-value">0.5%</div>
+          <div class="feature-title">Burn Mechanism</div>
+          <div class="feature-desc">Every transfer burns 0.5% of the amount. Deflationary by design — the more activity, the more scarce KORPO becomes.</div>
+        </div>
+        <div class="feature-card fade-up">
+          <span class="feature-icon">⚖️</span>
+          <div class="feature-value">No ICO</div>
+          <div class="feature-title">Fair Launch</div>
+          <div class="feature-desc">No presale, no team allocation, no insider advantages. Everyone gets the same deal from day one.</div>
+        </div>
+        <div class="feature-card fade-up">
+          <span class="feature-icon">💎</span>
+          <div class="feature-value">1,000,000,000</div>
+          <div class="feature-title">Fixed Supply</div>
+          <div class="feature-desc">Hard-capped at 1 billion tokens. No minting, no inflation. What exists is all there will ever be.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Live Stats Section -->
+  <section class="section" id="stats">
+    <div class="container">
+      <h2 class="section-title fade-up">Live Stats</h2>
+      <p class="section-subtitle fade-up">Real-time data from the KORPO contract on Base</p>
+      <div class="stats-grid">
+        <div class="stat-card fade-up">
+          <div class="stat-icon">📝</div>
+          <div class="stat-value loading" id="statClaims">—</div>
+          <div class="stat-label">KORPO Claimed</div>
+        </div>
+        <div class="stat-card fade-up">
+          <div class="stat-icon">👥</div>
+          <div class="stat-value loading" id="statClaimers">—</div>
+          <div class="stat-label">Unique Claimers</div>
+        </div>
+        <div class="stat-card fade-up">
+          <div class="stat-icon">🔥</div>
+          <div class="stat-value loading" id="statBurned">—</div>
+          <div class="stat-label">Total Burned</div>
+        </div>
+        <div class="stat-card fade-up">
+          <div class="stat-icon">💰</div>
+          <div class="stat-value loading" id="statSupply">1B</div>
+          <div class="stat-label">Remaining Supply</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works -->
+  <section class="section">
+    <div class="container">
+      <h2 class="section-title fade-up">How It Works</h2>
+      <p class="section-subtitle fade-up">Three steps to start holding KORPO</p>
+      <div class="steps">
+        <div class="step fade-up">
+          <div class="step-number">1</div>
+          <h3>Connect Wallet</h3>
+          <p>Use any Base-compatible wallet — MetaMask, Coinbase Wallet, or WalletConnect.</p>
+        </div>
+        <div class="step fade-up">
+          <div class="step-number">2</div>
+          <h3>Claim Daily</h3>
+          <p>Click Claim to receive 100 KORPO per day. No cost, no catch — just gas on Base (pennies).</p>
+        </div>
+        <div class="step fade-up">
+          <div class="step-number">3</div>
+          <h3>Trade or Hold</h3>
+          <p>Swap on Uniswap V3, or hold and watch the burn reduce circulating supply over time.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Links Section -->
+  <section class="section" id="links">
+    <div class="container">
+      <h2 class="section-title fade-up">Explore KORPO</h2>
+      <p class="section-subtitle fade-up">Contract, liquidity, and on-chain data</p>
+      <div class="links-grid">
+        <a href="https://basescan.org/token/0xf970c93d00de94786f6fdabbc63180da1d981bc7" target="_blank" class="link-card fade-up">
+          <span class="link-icon">🔍</span>
+          <div class="link-text">
+            <div class="link-title">Basescan</div>
+            <div class="link-desc">View contract & transactions on Base</div>
+          </div>
+          <span class="link-arrow">→</span>
+        </a>
+        <a href="https://www.geckoterminal.com/base/pools/0x588cc334d86c40ff16b8714f1ff8bd25993cfa9e" target="_blank" class="link-card fade-up">
+          <span class="link-icon">🦎</span>
+          <div class="link-text">
+            <div class="link-title">GeckoTerminal</div>
+            <div class="link-desc">Real-time price, volume & liquidity data</div>
+          </div>
+          <span class="link-arrow">→</span>
+        </a>
+        <a href="https://app.uniswap.org/#/pool/0x588Cc334d86C40fF16b8714f1Ff8bd25993CFa9e" target="_blank" class="link-card fade-up">
+          <span class="link-icon">🦄</span>
+          <div class="link-text">
+            <div class="link-title">Uniswap V3 Pool</div>
+            <div class="link-desc">KORPO/WETH 1% fee tier — trade now</div>
+          </div>
+          <span class="link-arrow">→</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-section">
+    <div class="container">
+      <h2 class="fade-up">Ready to Claim?</h2>
+      <p class="fade-up">Start earning KORPO tokens today — it's free, fair, and on Base.</p>
+      <div class="btn-group fade-up">
+        <a href="/claim.html" class="btn btn-primary">
+          🔮 Claim KORPO Now
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <p>🔮 KORPO — The Fair Distribution Token | <a href="https://korpo.pro">korpo.pro</a></p>
+      <p style="margin-top: 8px; font-size: 0.75rem; color: var(--text-muted);">
+        Contract: 0xf970c93d00de94786f6fdabbc63180da1d981bc7 · Pool: 0x588Cc334d86C40fF16b8714f1Ff8bd25993CFa9e
+      </p>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script>
+    // ─── Copy Contract Address ───
+    function copyContract() {
+      const addr = '0xf970c93d00de94786f6fdabbc63180da1d981bc7';
+      navigator.clipboard.writeText(addr).then(() => {
+        const toast = document.getElementById('copyToast');
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 2000);
+      }).catch(() => {
+        // Fallback
+        const ta = document.createElement('textarea');
+        ta.value = addr;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        const toast = document.getElementById('copyToast');
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 2000);
+      });
+    }
+
+    // ─── Fetch Live Stats from Contract ───
+    const KORPO_CONTRACT = '0xf970c93d00de94786f6fdabbc63180da1d981bc7';
+    const BASE_RPC = 'https://mainnet.base.org';
+
+    // ERC20/Custom ABI snippets for reading stats
+    const ABI = [
+      'function totalClaimed() view returns (uint256)',
+      'function uniqueClaimers() view returns (uint256)',
+      'function totalBurned() view returns (uint256)',
+      'function totalSupply() view returns (uint256)',
+      'function remainingSupply() view returns (uint256)',
+    ];
+
+    async function fetchStats() {
+      try {
+        // Removed duplicate initial fetch — selectors are now in the loop below
+
+        // Correct function selectors for KORPO contract on Base
+        const selectors = {
+          totalClaimed: '0xd54ad2a1',
+          uniqueClaimers: '0xf0531066',
+          totalBurned: '0xd89135cd',
+          totalSupply: '0x18160ddd',
+          remainingSupply: '0xda0239a6',
+        };
+
+        const results = {};
+        for (const [key, selector] of Object.entries(selectors)) {
+          try {
+            const res = await fetch(BASE_RPC, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                jsonrpc: '2.0',
+                id: 1,
+                method: 'eth_call',
+                params: [{ to: KORPO_CONTRACT, data: selector }, 'latest']
+              })
+            });
+            const json = await res.json();
+            if (json.result && json.result !== '0x') {
+              results[key] = BigInt(json.result);
+            }
+          } catch (e) { /* skip */ }
+        }
+
+        // Format and display
+        if (results.totalClaimed) {
+          const claimed = Number(results.totalClaimed) / 1e18;
+          document.getElementById('statClaims').textContent = formatNum(claimed, 0);
+          document.getElementById('statClaims').classList.remove('loading');
+        }
+        if (results.uniqueClaimers) {
+          document.getElementById('statClaimers').textContent = Number(results.uniqueClaimers).toString();
+          document.getElementById('statClaimers').classList.remove('loading');
+        }
+        if (results.totalBurned) {
+          const burned = Number(results.totalBurned) / 1e18;
+          document.getElementById('statBurned').textContent = formatNum(burned, 2);
+          document.getElementById('statBurned').classList.remove('loading');
+        }
+        if (results.remainingSupply) {
+          const supply = Number(results.remainingSupply) / 1e18;
+          document.getElementById('statSupply').textContent = formatNum(supply, 0);
+          document.getElementById('statSupply').classList.remove('loading');
+        } else if (results.totalSupply) {
+          const supply = Number(results.totalSupply) / 1e18;
+          document.getElementById('statSupply').textContent = formatNum(supply, 0);
+          document.getElementById('statSupply').classList.remove('loading');
+        }
+      } catch (e) {
+        console.warn('Could not fetch live stats:', e);
+        // Fallback: show dashes
+        document.querySelectorAll('.stat-value.loading').forEach(el => {
+          el.textContent = '—';
+          el.classList.remove('loading');
+        });
+      }
+    }
+
+    function formatNum(n, decimals = 0) {
+      if (n >= 1e9) return (n / 1e9).toFixed(decimals || 1) + 'B';
+      if (n >= 1e6) return (n / 1e6).toFixed(decimals || 1) + 'M';
+      if (n >= 1e3) return (n / 1e3).toFixed(decimals || 1) + 'K';
+      return n.toFixed(decimals);
+    }
+
+    // ─── Intersection Observer for Fade-Up ───
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+    document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+    // ─── Particle Background ───
+    const canvas = document.getElementById('particles');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+
+    class Particle {
+      constructor() {
+        this.reset();
+      }
+      reset() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.size = Math.random() * 2 + 0.5;
+        this.speedX = (Math.random() - 0.5) * 0.3;
+        this.speedY = (Math.random() - 0.5) * 0.3;
+        this.opacity = Math.random() * 0.5 + 0.1;
+      }
+      update() {
+        this.x += this.speedX;
+        this.y += this.speedY;
+        if (this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) {
+          this.reset();
+        }
+      }
+      draw() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(124, 58, 237, ${this.opacity})`;
+        ctx.fill();
+      }
+    }
+
+    // Create particles
+    const particleCount = Math.min(80, Math.floor(window.innerWidth / 20));
+    for (let i = 0; i < particleCount; i++) {
+      particles.push(new Particle());
+    }
+
+    function animateParticles() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particles.forEach(p => {
+        p.update();
+        p.draw();
+      });
+      // Draw connections
+      for (let i = 0; i < particles.length; i++) {
+        for (let j = i + 1; j < particles.length; j++) {
+          const dx = particles[i].x - particles[j].x;
+          const dy = particles[i].y - particles[j].y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < 120) {
+            ctx.beginPath();
+            ctx.moveTo(particles[i].x, particles[i].y);
+            ctx.lineTo(particles[j].x, particles[j].y);
+            ctx.strokeStyle = `rgba(124, 58, 237, ${0.08 * (1 - dist / 120)})`;
+            ctx.lineWidth = 0.5;
+            ctx.stroke();
+          }
+        }
+      }
+      requestAnimationFrame(animateParticles);
+    }
+    animateParticles();
+
+    // ─── Fetch contract stats on load ───
+    fetchStats();
+  </script>
+</body>
+</html>
