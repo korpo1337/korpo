@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Provide Liquidity — KORPO</title>
+  <meta name="description" content="Add liquidity to KORPO/WETH on Base. Earn rewards for providing concentrated liquidity on Uniswap V3.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔮</text></svg>">
+  <script src="https://cdn.jsdelivr.net/npm/ethers@6.13.5/dist/ethers.umd.min.js"></script>
+  <style>
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+    :root{--bg:#0a0a12;--card:#12121f;--border:#2a2a4a;--text:#f0f0ff;--muted:#8a8aba;--accent:#7c3aed;--accent-light:#a78bfa;--base:#0052ff;--glow:rgba(124,58,237,0.35)}
+    body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Inter,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem 1rem}
+    .container{max-width:520px;width:100%}
+    .brand{text-align:center;margin-bottom:2rem}
+    .brand h1{font-size:2.2rem;font-weight:800;background:linear-gradient(135deg,#a855f7,#6366f1);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+    .brand p{color:var(--muted);font-size:1rem;margin-top:.3rem}
+    .card{background:var(--card);border:1px solid var(--border);border-radius:24px;padding:2rem;box-shadow:0 8px 40px rgba(0,0,0,0.4)}
+    .card h2{font-size:1.25rem;margin-bottom:1rem;text-align:center}
+    .stat{display:flex;justify-content:space-between;padding:.7rem 0;border-bottom:1px solid var(--border);font-size:.92rem}
+    .stat-label{color:var(--muted)}
+    .stat-val{font-weight:600}
+    .btn{width:100%;padding:.95rem 1.2rem;font-size:1rem;font-weight:700;color:#fff;background:linear-gradient(135deg,var(--accent),#6366f1);border:none;border-radius:14px;cursor:pointer;transition:transform .15s,box-shadow .15s;box-shadow:0 4px 20px var(--glow);margin-top:1.5rem;text-decoration:none;display:inline-block;text-align:center}
+    .btn:hover{transform:translateY(-2px);box-shadow:0 6px 28px var(--glow)}
+    .back{position:absolute;top:1.2rem;left:1.2rem;color:var(--muted);text-decoration:none;font-size:.9rem}
+    .back:hover{color:var(--text)}
+    .reward-box{background:rgba(124,58,237,0.08);border:1px solid rgba(124,58,237,0.2);border-radius:16px;padding:1.2rem;margin-top:1.2rem;text-align:center}
+    .reward-box h3{font-size:1rem;margin-bottom:.4rem}
+    .reward-box p{color:var(--muted);font-size:.88rem}
+    .steps{margin-top:1.2rem}
+    .step{display:flex;gap:.8rem;margin-bottom:.9rem;align-items:flex-start;font-size:.87rem;line-height:1.5}
+    .step-num{background:rgba(124,58,237,0.15);color:var(--accent-light);font-weight:700;border-radius:6px;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:.8rem;flex-shrink:0}
+    .copy-row{display:flex;gap:.5rem;margin-top:.8rem}
+    .copy-row input{flex:1;padding:.6rem .8rem;border:1px solid var(--border);border-radius:10px;background:rgba(255,255,255,0.03);color:var(--text);font-size:.8rem}
+    .copy-row button{padding:.6rem .9rem;border:1px solid var(--accent);background:none;color:var(--accent-light);border-radius:10px;cursor:pointer;font-size:.8rem}
+    .copy-row button:hover{background:rgba(124,58,237,0.1)}
+    @media(max-width:480px){.brand h1{font-size:1.8rem}}
+  </style>
+</head>
+<body>
+  <a href="/" class="back">← Back to korpo.pro</a>
+  <div class="container">
+    <div class="brand">
+      <h1>🔮 KORPO Liquidity</h1>
+      <p>Earn KORPO rewards for providing WETH liquidity</p>
+    </div>
+    <div class="card">
+      <h2>Pool Information</h2>
+      <div class="stat"><span class="stat-label">Pair</span><span class="stat-val">KORPO/WETH</span></div>
+      <div class="stat"><span class="stat-label">Fee tier</span><span class="stat-val">0.3%</span></div>
+      <div class="stat"><span class="stat-label">Network</span><span class="stat-val">Base</span></div>
+      <div class="stat"><span class="stat-label">DEX</span><span class="stat-val">Uniswap V3</span></div>
+      <div class="stat"><span class="stat-label">Pool address</span>
+        <span class="stat-val" id="poolAddr">0x92d0...C6C1</span>
+      </div>
+      <div class="copy-row">
+        <input id="poolInput" value="0x92d0d85B9733C4e3A7D3027A6F00c0e0dE45C6C1" readonly>
+        <button onclick="copyPool()">Copy</button>
+      </div>
+      <div class="reward-box">
+        <h3>💰 LP Rewards</h3>
+        <p>Stake your LP NFT in the reward contract to earn KORPO per second. Rewards are distributed based on liquidity value.</p>
+      </div>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div>Go to Uniswap on Base and add liquidity to the KORPO/WETH 0.3% pool: <a href="https://app.uniswap.org/add/ETH/0xF970c93D00De94786F6fdABBc63180da1D981bc7" target="_blank" style="color:var(--accent-light)">Open Uniswap →</a></div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div>Mint any range. Full-range positions give maximum coverage. Narrow ranges earn more swap fees.</div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div>After minting, come back and stake your LP NFT to earn KORPO rewards.</div>
+        </div>
+      </div>
+      <a href="https://app.uniswap.org/#/pool/0x92d0d85B9733C4e3A7D3027A6F00c0e0dE45C6C1" target="_blank" class="btn">Add Liquidity on Uniswap</a>
+    </div>
+  </div>
+  <script>
+    function copyPool(){
+      const el = document.getElementById('poolInput');
+      el.select();
+      document.execCommand('copy');
+      el.value='Copied!'; setTimeout(()=>el.value='0x92d0d85B9733C4e3A7D3027A6F00c0e0dE45C6C1',1500);
+    }
+    async function loadStats(){
+      const provider = new ethers.JsonRpcProvider('https://base-rpc.publicnode.com');
+      const pool = new ethers.Contract('0x92d0d85B9733C4e3A7D3027A6F00c0e0dE45C6C1', 
+        ['function liquidity() view returns (uint128)', 'function slot0() view returns (uint160,int24)'], provider);
+      const r = new ethers.Contract('0x38cE0A1888492A6586Af16730591A2D82A9115ba',
+        ['function rewardPerSecond() view returns (uint256)'], provider);
+      const [l, s, rs] = await Promise.all([pool.liquidity().catch(()=>null), pool.slot0().catch(()=>null), r.rewardPerSecond().catch(()=>null)]);
+      if(l!=null) {
+        const div = document.createElement('div'); div.className='stat';
+        div.innerHTML = '<span class="stat-label">Pool liquidity</span><span class="stat-val">'+Number(l)/1e18+'</span>';
+        document.querySelector('.card').insertBefore(div, document.querySelector('.reward-box'));
+      }
+      if(rs!=null && rs>0n) {
+        const div = document.createElement('div'); div.className='stat';
+        div.innerHTML = '<span class="stat-label">Reward rate</span><span class="stat-val">'+Number(ethers.formatEther(rs)).toFixed(6)+' KORPO/sec</span>';
+        document.querySelector('.card').insertBefore(div, document.querySelector('.reward-box'));
+      }
+    }
+    loadStats().catch(()=>{});
+  </script>
+</body>
+</html>
